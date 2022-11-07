@@ -24,7 +24,7 @@ TransactionBaseService.constructor
 
 #### Defined in
 
-[packages/medusa/src/services/order-edit.ts:27](https://github.com/medusajs/medusa/blob/6225aa57b/packages/medusa/src/services/order-edit.ts#L27)
+[packages/medusa/src/services/order-edit.ts:65](https://github.com/medusajs/medusa/blob/0b0d50b47/packages/medusa/src/services/order-edit.ts#L65)
 
 ## Properties
 
@@ -38,7 +38,7 @@ TransactionBaseService.\_\_configModule\_\_
 
 #### Defined in
 
-[packages/medusa/src/interfaces/transaction-base-service.ts:10](https://github.com/medusajs/medusa/blob/6225aa57b/packages/medusa/src/interfaces/transaction-base-service.ts#L10)
+[packages/medusa/src/interfaces/transaction-base-service.ts:10](https://github.com/medusajs/medusa/blob/0b0d50b47/packages/medusa/src/interfaces/transaction-base-service.ts#L10)
 
 ___
 
@@ -52,7 +52,37 @@ TransactionBaseService.\_\_container\_\_
 
 #### Defined in
 
-[packages/medusa/src/interfaces/transaction-base-service.ts:9](https://github.com/medusajs/medusa/blob/6225aa57b/packages/medusa/src/interfaces/transaction-base-service.ts#L9)
+[packages/medusa/src/interfaces/transaction-base-service.ts:9](https://github.com/medusajs/medusa/blob/0b0d50b47/packages/medusa/src/interfaces/transaction-base-service.ts#L9)
+
+___
+
+### eventBusService\_
+
+• `Protected` `Readonly` **eventBusService\_**: [`EventBusService`](EventBusService.md)
+
+#### Defined in
+
+[packages/medusa/src/services/order-edit.ts:60](https://github.com/medusajs/medusa/blob/0b0d50b47/packages/medusa/src/services/order-edit.ts#L60)
+
+___
+
+### lineItemAdjustmentService\_
+
+• `Protected` `Readonly` **lineItemAdjustmentService\_**: [`LineItemAdjustmentService`](LineItemAdjustmentService.md)
+
+#### Defined in
+
+[packages/medusa/src/services/order-edit.ts:62](https://github.com/medusajs/medusa/blob/0b0d50b47/packages/medusa/src/services/order-edit.ts#L62)
+
+___
+
+### lineItemService\_
+
+• `Protected` `Readonly` **lineItemService\_**: [`LineItemService`](LineItemService.md)
+
+#### Defined in
+
+[packages/medusa/src/services/order-edit.ts:59](https://github.com/medusajs/medusa/blob/0b0d50b47/packages/medusa/src/services/order-edit.ts#L59)
 
 ___
 
@@ -66,7 +96,17 @@ TransactionBaseService.manager\_
 
 #### Defined in
 
-[packages/medusa/src/services/order-edit.ts:23](https://github.com/medusajs/medusa/blob/6225aa57b/packages/medusa/src/services/order-edit.ts#L23)
+[packages/medusa/src/services/order-edit.ts:52](https://github.com/medusajs/medusa/blob/0b0d50b47/packages/medusa/src/services/order-edit.ts#L52)
+
+___
+
+### orderEditItemChangeService\_
+
+• `Protected` `Readonly` **orderEditItemChangeService\_**: [`OrderEditItemChangeService`](OrderEditItemChangeService.md)
+
+#### Defined in
+
+[packages/medusa/src/services/order-edit.ts:63](https://github.com/medusajs/medusa/blob/0b0d50b47/packages/medusa/src/services/order-edit.ts#L63)
 
 ___
 
@@ -76,7 +116,7 @@ ___
 
 #### Defined in
 
-[packages/medusa/src/services/order-edit.ts:24](https://github.com/medusajs/medusa/blob/6225aa57b/packages/medusa/src/services/order-edit.ts#L24)
+[packages/medusa/src/services/order-edit.ts:55](https://github.com/medusajs/medusa/blob/0b0d50b47/packages/medusa/src/services/order-edit.ts#L55)
 
 ___
 
@@ -86,7 +126,27 @@ ___
 
 #### Defined in
 
-[packages/medusa/src/services/order-edit.ts:25](https://github.com/medusajs/medusa/blob/6225aa57b/packages/medusa/src/services/order-edit.ts#L25)
+[packages/medusa/src/services/order-edit.ts:57](https://github.com/medusajs/medusa/blob/0b0d50b47/packages/medusa/src/services/order-edit.ts#L57)
+
+___
+
+### taxProviderService\_
+
+• `Protected` `Readonly` **taxProviderService\_**: [`TaxProviderService`](TaxProviderService.md)
+
+#### Defined in
+
+[packages/medusa/src/services/order-edit.ts:61](https://github.com/medusajs/medusa/blob/0b0d50b47/packages/medusa/src/services/order-edit.ts#L61)
+
+___
+
+### totalsService\_
+
+• `Protected` `Readonly` **totalsService\_**: [`TotalsService`](TotalsService.md)
+
+#### Defined in
+
+[packages/medusa/src/services/order-edit.ts:58](https://github.com/medusajs/medusa/blob/0b0d50b47/packages/medusa/src/services/order-edit.ts#L58)
 
 ___
 
@@ -100,9 +160,51 @@ TransactionBaseService.transactionManager\_
 
 #### Defined in
 
-[packages/medusa/src/services/order-edit.ts:22](https://github.com/medusajs/medusa/blob/6225aa57b/packages/medusa/src/services/order-edit.ts#L22)
+[packages/medusa/src/services/order-edit.ts:53](https://github.com/medusajs/medusa/blob/0b0d50b47/packages/medusa/src/services/order-edit.ts#L53)
+
+___
+
+### Events
+
+▪ `Static` `Readonly` **Events**: `Object`
+
+#### Type declaration
+
+| Name | Type |
+| :------ | :------ |
+| `CANCELED` | `string` |
+| `CONFIRMED` | `string` |
+| `CREATED` | `string` |
+| `DECLINED` | `string` |
+| `REQUESTED` | `string` |
+| `UPDATED` | `string` |
+
+#### Defined in
+
+[packages/medusa/src/services/order-edit.ts:43](https://github.com/medusajs/medusa/blob/0b0d50b47/packages/medusa/src/services/order-edit.ts#L43)
 
 ## Methods
+
+### addLineItem
+
+▸ **addLineItem**(`orderEditId`, `data`): `Promise`<`void`\>
+
+#### Parameters
+
+| Name | Type |
+| :------ | :------ |
+| `orderEditId` | `string` |
+| `data` | `AddOrderEditLineItemInput` |
+
+#### Returns
+
+`Promise`<`void`\>
+
+#### Defined in
+
+[packages/medusa/src/services/order-edit.ts:547](https://github.com/medusajs/medusa/blob/0b0d50b47/packages/medusa/src/services/order-edit.ts#L547)
+
+___
 
 ### atomicPhase\_
 
@@ -139,13 +241,142 @@ TransactionBaseService.atomicPhase\_
 
 #### Defined in
 
-[packages/medusa/src/interfaces/transaction-base-service.ts:50](https://github.com/medusajs/medusa/blob/6225aa57b/packages/medusa/src/interfaces/transaction-base-service.ts#L50)
+[packages/medusa/src/interfaces/transaction-base-service.ts:50](https://github.com/medusajs/medusa/blob/0b0d50b47/packages/medusa/src/interfaces/transaction-base-service.ts#L50)
 
 ___
 
-### computeLineItems
+### cancel
 
-▸ **computeLineItems**(`orderEditId`): `Promise`<{ `items`: `LineItem`[] ; `removedItems`: `LineItem`[]  }\>
+▸ **cancel**(`orderEditId`, `context?`): `Promise`<`OrderEdit`\>
+
+#### Parameters
+
+| Name | Type |
+| :------ | :------ |
+| `orderEditId` | `string` |
+| `context` | `Object` |
+| `context.loggedInUserId?` | `string` |
+
+#### Returns
+
+`Promise`<`OrderEdit`\>
+
+#### Defined in
+
+[packages/medusa/src/services/order-edit.ts:691](https://github.com/medusajs/medusa/blob/0b0d50b47/packages/medusa/src/services/order-edit.ts#L691)
+
+___
+
+### confirm
+
+▸ **confirm**(`orderEditId`, `context?`): `Promise`<`OrderEdit`\>
+
+#### Parameters
+
+| Name | Type |
+| :------ | :------ |
+| `orderEditId` | `string` |
+| `context` | `Object` |
+| `context.loggedInUserId?` | `string` |
+
+#### Returns
+
+`Promise`<`OrderEdit`\>
+
+#### Defined in
+
+[packages/medusa/src/services/order-edit.ts:730](https://github.com/medusajs/medusa/blob/0b0d50b47/packages/medusa/src/services/order-edit.ts#L730)
+
+___
+
+### create
+
+▸ **create**(`data`, `context`): `Promise`<`OrderEdit`\>
+
+#### Parameters
+
+| Name | Type |
+| :------ | :------ |
+| `data` | `CreateOrderEditInput` |
+| `context` | `Object` |
+| `context.loggedInUserId` | `string` |
+
+#### Returns
+
+`Promise`<`OrderEdit`\>
+
+#### Defined in
+
+[packages/medusa/src/services/order-edit.ts:207](https://github.com/medusajs/medusa/blob/0b0d50b47/packages/medusa/src/services/order-edit.ts#L207)
+
+___
+
+### decline
+
+▸ **decline**(`orderEditId`, `context`): `Promise`<`OrderEdit`\>
+
+#### Parameters
+
+| Name | Type |
+| :------ | :------ |
+| `orderEditId` | `string` |
+| `context` | `Object` |
+| `context.declinedReason?` | `string` |
+| `context.loggedInUserId?` | `string` |
+
+#### Returns
+
+`Promise`<`OrderEdit`\>
+
+#### Defined in
+
+[packages/medusa/src/services/order-edit.ts:309](https://github.com/medusajs/medusa/blob/0b0d50b47/packages/medusa/src/services/order-edit.ts#L309)
+
+___
+
+### decorateTotals
+
+▸ **decorateTotals**(`orderEdit`): `Promise`<`OrderEdit`\>
+
+#### Parameters
+
+| Name | Type |
+| :------ | :------ |
+| `orderEdit` | `OrderEdit` |
+
+#### Returns
+
+`Promise`<`OrderEdit`\>
+
+#### Defined in
+
+[packages/medusa/src/services/order-edit.ts:533](https://github.com/medusajs/medusa/blob/0b0d50b47/packages/medusa/src/services/order-edit.ts#L533)
+
+___
+
+### delete
+
+▸ **delete**(`id`): `Promise`<`void`\>
+
+#### Parameters
+
+| Name | Type |
+| :------ | :------ |
+| `id` | `string` |
+
+#### Returns
+
+`Promise`<`void`\>
+
+#### Defined in
+
+[packages/medusa/src/services/order-edit.ts:285](https://github.com/medusajs/medusa/blob/0b0d50b47/packages/medusa/src/services/order-edit.ts#L285)
+
+___
+
+### deleteClonedItems
+
+▸ `Protected` **deleteClonedItems**(`orderEditId`): `Promise`<`void`\>
 
 #### Parameters
 
@@ -155,11 +386,159 @@ ___
 
 #### Returns
 
-`Promise`<{ `items`: `LineItem`[] ; `removedItems`: `LineItem`[]  }\>
+`Promise`<`void`\>
 
 #### Defined in
 
-[packages/medusa/src/services/order-edit.ts:64](https://github.com/medusajs/medusa/blob/6225aa57b/packages/medusa/src/services/order-edit.ts#L64)
+[packages/medusa/src/services/order-edit.ts:803](https://github.com/medusajs/medusa/blob/0b0d50b47/packages/medusa/src/services/order-edit.ts#L803)
+
+___
+
+### deleteItemChange
+
+▸ **deleteItemChange**(`orderEditId`, `itemChangeId`): `Promise`<`void`\>
+
+#### Parameters
+
+| Name | Type |
+| :------ | :------ |
+| `orderEditId` | `string` |
+| `itemChangeId` | `string` |
+
+#### Returns
+
+`Promise`<`void`\>
+
+#### Defined in
+
+[packages/medusa/src/services/order-edit.ts:619](https://github.com/medusajs/medusa/blob/0b0d50b47/packages/medusa/src/services/order-edit.ts#L619)
+
+___
+
+### getTotals
+
+▸ **getTotals**(`orderEditId`): `Promise`<{ `difference_due`: `number` ; `discount_total`: `number` ; `gift_card_tax_total`: `number` ; `gift_card_total`: `number` ; `shipping_total`: `number` ; `subtotal`: `number` ; `tax_total`: ``null`` \| `number` ; `total`: `number`  }\>
+
+Compute and return the different totals from the order edit id
+
+#### Parameters
+
+| Name | Type |
+| :------ | :------ |
+| `orderEditId` | `string` |
+
+#### Returns
+
+`Promise`<{ `difference_due`: `number` ; `discount_total`: `number` ; `gift_card_tax_total`: `number` ; `gift_card_total`: `number` ; `shipping_total`: `number` ; `subtotal`: `number` ; `tax_total`: ``null`` \| `number` ; `total`: `number`  }\>
+
+#### Defined in
+
+[packages/medusa/src/services/order-edit.ts:148](https://github.com/medusajs/medusa/blob/0b0d50b47/packages/medusa/src/services/order-edit.ts#L148)
+
+___
+
+### list
+
+▸ **list**(`selector`, `config?`): `Promise`<`OrderEdit`[]\>
+
+#### Parameters
+
+| Name | Type |
+| :------ | :------ |
+| `selector` | `Selector`<`OrderEdit`\> |
+| `config?` | `FindConfig`<`OrderEdit`\> |
+
+#### Returns
+
+`Promise`<`OrderEdit`[]\>
+
+#### Defined in
+
+[packages/medusa/src/services/order-edit.ts:136](https://github.com/medusajs/medusa/blob/0b0d50b47/packages/medusa/src/services/order-edit.ts#L136)
+
+___
+
+### listAndCount
+
+▸ **listAndCount**(`selector`, `config?`): `Promise`<[`OrderEdit`[], `number`]\>
+
+#### Parameters
+
+| Name | Type |
+| :------ | :------ |
+| `selector` | `Selector`<`OrderEdit`\> & { `q?`: `string`  } |
+| `config?` | `FindConfig`<`OrderEdit`\> |
+
+#### Returns
+
+`Promise`<[`OrderEdit`[], `number`]\>
+
+#### Defined in
+
+[packages/medusa/src/services/order-edit.ts:112](https://github.com/medusajs/medusa/blob/0b0d50b47/packages/medusa/src/services/order-edit.ts#L112)
+
+___
+
+### refreshAdjustments
+
+▸ **refreshAdjustments**(`orderEditId`): `Promise`<`void`\>
+
+#### Parameters
+
+| Name | Type |
+| :------ | :------ |
+| `orderEditId` | `string` |
+
+#### Returns
+
+`Promise`<`void`\>
+
+#### Defined in
+
+[packages/medusa/src/services/order-edit.ts:490](https://github.com/medusajs/medusa/blob/0b0d50b47/packages/medusa/src/services/order-edit.ts#L490)
+
+___
+
+### removeLineItem
+
+▸ **removeLineItem**(`orderEditId`, `lineItemId`): `Promise`<`void`\>
+
+#### Parameters
+
+| Name | Type |
+| :------ | :------ |
+| `orderEditId` | `string` |
+| `lineItemId` | `string` |
+
+#### Returns
+
+`Promise`<`void`\>
+
+#### Defined in
+
+[packages/medusa/src/services/order-edit.ts:433](https://github.com/medusajs/medusa/blob/0b0d50b47/packages/medusa/src/services/order-edit.ts#L433)
+
+___
+
+### requestConfirmation
+
+▸ **requestConfirmation**(`orderEditId`, `context?`): `Promise`<`OrderEdit`\>
+
+#### Parameters
+
+| Name | Type |
+| :------ | :------ |
+| `orderEditId` | `string` |
+| `context` | `Object` |
+| `context.loggedInUserId?` | `string` |
+
+#### Returns
+
+`Promise`<`OrderEdit`\>
+
+#### Defined in
+
+[packages/medusa/src/services/order-edit.ts:651](https://github.com/medusajs/medusa/blob/0b0d50b47/packages/medusa/src/services/order-edit.ts#L651)
 
 ___
 
@@ -180,7 +559,28 @@ ___
 
 #### Defined in
 
-[packages/medusa/src/services/order-edit.ts:40](https://github.com/medusajs/medusa/blob/6225aa57b/packages/medusa/src/services/order-edit.ts#L40)
+[packages/medusa/src/services/order-edit.ts:90](https://github.com/medusajs/medusa/blob/0b0d50b47/packages/medusa/src/services/order-edit.ts#L90)
+
+___
+
+### retrieveActive
+
+▸ `Protected` **retrieveActive**(`orderId`, `config?`): `Promise`<`undefined` \| `OrderEdit`\>
+
+#### Parameters
+
+| Name | Type |
+| :------ | :------ |
+| `orderId` | `string` |
+| `config` | `FindConfig`<`OrderEdit`\> |
+
+#### Returns
+
+`Promise`<`undefined` \| `OrderEdit`\>
+
+#### Defined in
+
+[packages/medusa/src/services/order-edit.ts:782](https://github.com/medusajs/medusa/blob/0b0d50b47/packages/medusa/src/services/order-edit.ts#L782)
 
 ___
 
@@ -204,7 +604,85 @@ TransactionBaseService.shouldRetryTransaction\_
 
 #### Defined in
 
-[packages/medusa/src/interfaces/transaction-base-service.ts:31](https://github.com/medusajs/medusa/blob/6225aa57b/packages/medusa/src/interfaces/transaction-base-service.ts#L31)
+[packages/medusa/src/interfaces/transaction-base-service.ts:31](https://github.com/medusajs/medusa/blob/0b0d50b47/packages/medusa/src/interfaces/transaction-base-service.ts#L31)
+
+___
+
+### update
+
+▸ **update**(`orderEditId`, `data`): `Promise`<`OrderEdit`\>
+
+#### Parameters
+
+| Name | Type |
+| :------ | :------ |
+| `orderEditId` | `string` |
+| `data` | `Object` |
+| `data.canceled_at?` | { toString?: {} \| undefined; toDateString?: {} \| undefined; toTimeString?: {} \| undefined; toLocaleString?: {} \| undefined; toLocaleDateString?: {} \| undefined; toLocaleTimeString?: {} \| undefined; ... 37 more ...; [Symbol.toPrimitive]?: {} \| undefined; } |
+| `data.canceled_by?` | `string` |
+| `data.changes?` | (`undefined` \| { type?: OrderEditItemChangeType \| undefined; order\_edit\_id?: string \| undefined; order\_edit?: { order\_id?: string \| undefined; order?: { readonly object?: "order" \| undefined; ... 51 more ...; updated\_at?: { ...; } \| undefined; } \| undefined; ... 27 more ...; updated\_at?: { ...; } \| undefined; } \| undefined; ... 7 ...)[] |
+| `data.confirmed_at?` | { toString?: {} \| undefined; toDateString?: {} \| undefined; toTimeString?: {} \| undefined; toLocaleString?: {} \| undefined; toLocaleDateString?: {} \| undefined; toLocaleTimeString?: {} \| undefined; ... 37 more ...; [Symbol.toPrimitive]?: {} \| undefined; } |
+| `data.confirmed_by?` | `string` |
+| `data.created_at?` | { toString?: {} \| undefined; toDateString?: {} \| undefined; toTimeString?: {} \| undefined; toLocaleString?: {} \| undefined; toLocaleDateString?: {} \| undefined; toLocaleTimeString?: {} \| undefined; ... 37 more ...; [Symbol.toPrimitive]?: {} \| undefined; } |
+| `data.created_by?` | `string` |
+| `data.declined_at?` | { toString?: {} \| undefined; toDateString?: {} \| undefined; toTimeString?: {} \| undefined; toLocaleString?: {} \| undefined; toLocaleDateString?: {} \| undefined; toLocaleTimeString?: {} \| undefined; ... 37 more ...; [Symbol.toPrimitive]?: {} \| undefined; } |
+| `data.declined_by?` | `string` |
+| `data.declined_reason?` | `string` |
+| `data.difference_due?` | `number` |
+| `data.discount_total?` | `number` |
+| `data.gift_card_tax_total?` | `number` |
+| `data.gift_card_total?` | `number` |
+| `data.id?` | `string` |
+| `data.internal_note?` | `string` |
+| `data.items?` | (`undefined` \| { cart\_id?: string \| undefined; cart?: { readonly object?: "cart" \| undefined; email?: string \| undefined; billing\_address\_id?: string \| undefined; billing\_address?: { customer\_id?: string \| ... 1 more ... \| undefined; ... 16 more ...; updated\_at?: { ...; } \| undefined; } \| undefined; ... 36 more ...; updated\_at?: {...)[] |
+| `data.order?` | { readonly object?: "order" \| undefined; status?: OrderStatus \| undefined; fulfillment\_status?: FulfillmentStatus \| undefined; payment\_status?: PaymentStatus \| undefined; ... 48 more ...; updated\_at?: { ...; } \| undefined; } |
+| `data.order_id?` | `string` |
+| `data.payment_collection?` | { type?: PaymentCollectionType \| undefined; status?: PaymentCollectionStatus \| undefined; description?: string \| undefined; ... 15 more ...; updated\_at?: { ...; } \| undefined; } |
+| `data.payment_collection_id?` | `string` |
+| `data.requested_at?` | { toString?: {} \| undefined; toDateString?: {} \| undefined; toTimeString?: {} \| undefined; toLocaleString?: {} \| undefined; toLocaleDateString?: {} \| undefined; toLocaleTimeString?: {} \| undefined; ... 37 more ...; [Symbol.toPrimitive]?: {} \| undefined; } |
+| `data.requested_by?` | `string` |
+| `data.shipping_total?` | `number` |
+| `data.status?` | `OrderEditStatus` |
+| `data.subtotal?` | `number` |
+| `data.tax_total?` | ``null`` \| `number` |
+| `data.total?` | `number` |
+| `data.updated_at?` | { toString?: {} \| undefined; toDateString?: {} \| undefined; toTimeString?: {} \| undefined; toLocaleString?: {} \| undefined; toLocaleDateString?: {} \| undefined; toLocaleTimeString?: {} \| undefined; ... 37 more ...; [Symbol.toPrimitive]?: {} \| undefined; } |
+| `data.loadStatus?` |  |
+
+#### Returns
+
+`Promise`<`OrderEdit`\>
+
+#### Defined in
+
+[packages/medusa/src/services/order-edit.ts:256](https://github.com/medusajs/medusa/blob/0b0d50b47/packages/medusa/src/services/order-edit.ts#L256)
+
+___
+
+### updateLineItem
+
+▸ **updateLineItem**(`orderEditId`, `itemId`, `data`): `Promise`<`void`\>
+
+Create or update order edit item change line item and apply the quantity
+- If the item change already exists then update the quantity of the line item as well as the line adjustments
+- If the item change does not exist then create the item change of type update and apply the quantity as well as update the line adjustments
+
+#### Parameters
+
+| Name | Type |
+| :------ | :------ |
+| `orderEditId` | `string` |
+| `itemId` | `string` |
+| `data` | `Object` |
+| `data.quantity` | `number` |
+
+#### Returns
+
+`Promise`<`void`\>
+
+#### Defined in
+
+[packages/medusa/src/services/order-edit.ts:360](https://github.com/medusajs/medusa/blob/0b0d50b47/packages/medusa/src/services/order-edit.ts#L360)
 
 ___
 
@@ -228,4 +706,24 @@ TransactionBaseService.withTransaction
 
 #### Defined in
 
-[packages/medusa/src/interfaces/transaction-base-service.ts:13](https://github.com/medusajs/medusa/blob/6225aa57b/packages/medusa/src/interfaces/transaction-base-service.ts#L13)
+[packages/medusa/src/interfaces/transaction-base-service.ts:13](https://github.com/medusajs/medusa/blob/0b0d50b47/packages/medusa/src/interfaces/transaction-base-service.ts#L13)
+
+___
+
+### isOrderEditActive
+
+▸ `Static` `Private` **isOrderEditActive**(`orderEdit`): `boolean`
+
+#### Parameters
+
+| Name | Type |
+| :------ | :------ |
+| `orderEdit` | `OrderEdit` |
+
+#### Returns
+
+`boolean`
+
+#### Defined in
+
+[packages/medusa/src/services/order-edit.ts:849](https://github.com/medusajs/medusa/blob/0b0d50b47/packages/medusa/src/services/order-edit.ts#L849)

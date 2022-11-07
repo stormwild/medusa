@@ -18,7 +18,10 @@ displayed_sidebar: entitiesSidebar
 - [DraftOrderStatus](enums/DraftOrderStatus.md)
 - [FulfillmentStatus](enums/FulfillmentStatus.md)
 - [OrderEditItemChangeType](enums/OrderEditItemChangeType.md)
+- [OrderEditStatus](enums/OrderEditStatus.md)
 - [OrderStatus](enums/OrderStatus.md)
+- [PaymentCollectionStatus](enums/PaymentCollectionStatus.md)
+- [PaymentCollectionType](enums/PaymentCollectionType.md)
 - [PaymentSessionStatus](enums/PaymentSessionStatus.md)
 - [PaymentStatus](enums/PaymentStatus.md)
 - [ProductStatus](enums/ProductStatus.md)
@@ -34,6 +37,7 @@ displayed_sidebar: entitiesSidebar
 ## Classes
 
 - [Address](classes/Address.md)
+- [AnalyticsConfig](classes/AnalyticsConfig.md)
 - [BatchJob](classes/BatchJob.md)
 - [Cart](classes/Cart.md)
 - [ClaimImage](classes/ClaimImage.md)
@@ -73,6 +77,7 @@ displayed_sidebar: entitiesSidebar
 - [OrderEdit](classes/OrderEdit.md)
 - [OrderItemChange](classes/OrderItemChange.md)
 - [Payment](classes/Payment.md)
+- [PaymentCollection](classes/PaymentCollection.md)
 - [PaymentProvider](classes/PaymentProvider.md)
 - [PaymentSession](classes/PaymentSession.md)
 - [PriceList](classes/PriceList.md)
