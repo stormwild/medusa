@@ -9,12 +9,15 @@ import giftCardRoutes from "./gift-cards"
 import orderRoutes from "./orders"
 import orderEditRoutes from "./order-edits"
 import productRoutes from "./products"
+import productTypesRoutes from "../admin/product-types"
 import regionRoutes from "./regions"
 import returnReasonRoutes from "./return-reasons"
 import returnRoutes from "./returns"
 import shippingOptionRoutes from "./shipping-options"
 import swapRoutes from "./swaps"
 import variantRoutes from "./variants"
+import paymentCollectionRoutes from "./payment-collections"
+
 import { parseCorsOrigins } from "../../../utils"
 
 const route = Router()
@@ -36,6 +39,7 @@ export default (app, container, config) => {
   collectionRoutes(route)
   customerRoutes(route, container)
   productRoutes(route)
+  productTypesRoutes(route)
   orderRoutes(route)
   orderEditRoutes(route)
   cartRoutes(route, container)
@@ -46,6 +50,7 @@ export default (app, container, config) => {
   returnRoutes(route)
   giftCardRoutes(route)
   returnReasonRoutes(route)
+  paymentCollectionRoutes(route)
 
   return app
 }
