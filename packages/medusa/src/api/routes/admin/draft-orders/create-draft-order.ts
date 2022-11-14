@@ -15,14 +15,14 @@ import {
   defaultAdminDraftOrdersRelations,
 } from "."
 
-import { AddressPayload } from "../../../../types/common"
+import { Type } from "class-transformer"
+import { EntityManager } from "typeorm"
 import { DraftOrder } from "../../../.."
 import { DraftOrderService } from "../../../../services"
-import { EntityManager } from "typeorm"
-import { Type } from "class-transformer"
-import { transformIdableFields } from "medusa-core-utils"
+import { AddressPayload } from "../../../../types/common"
+import { DraftOrderCreateProps } from "../../../../types/draft-orders"
 import { validator } from "../../../../utils/validator"
-
+import { IsType } from "../../../../utils/validators/is-type"
 /**
  * @oas [post] /draft-orders
  * operationId: "PostDraftOrders"
@@ -49,10 +49,14 @@ import { validator } from "../../../../utils/validator"
  *             format: email
  *           billing_address:
  *             description: "The Address to be used for billing purposes."
- *             $ref: "#/components/schemas/address"
+ *             anyOf:
+ *               - $ref: "#/components/schemas/address_fields"
+ *               - type: string
  *           shipping_address:
  *             description: "The Address to be used for shipping."
- *             $ref: "#/components/schemas/address"
+ *             anyOf:
+ *               - $ref: "#/components/schemas/address_fields"
+ *               - type: string
  *           items:
  *             description: The Line Items that have been received.
  *             type: array
@@ -116,6 +120,53 @@ import { validator } from "../../../../utils/validator"
  *           metadata:
  *             description: The optional key-value map with additional details about the Draft Order.
  *             type: object
+ * x-codeSamples:
+ *   - lang: JavaScript
+ *     label: JS Client
+ *     source: |
+ *       import Medusa from "@medusajs/medusa-js"
+ *       const medusa = new Medusa({ baseUrl: MEDUSA_BACKEND_URL, maxRetries: 3 })
+ *       // must be previously logged in or use api token
+ *       medusa.admin.draftOrders.create({
+ *         email: 'user@example.com',
+ *         region_id,
+ *         items: [
+ *           {
+ *             quantity: 1
+ *           }
+ *         ],
+ *         shipping_methods: [
+ *           {
+ *             option_id
+ *           }
+ *         ],
+ *       })
+ *       .then(({ draft_order }) => {
+ *         console.log(draft_order.id);
+ *       });
+ *   - lang: Shell
+ *     label: cURL
+ *     source: |
+ *       curl --location --request POST 'https://medusa-url.com/admin/draft-orders' \
+ *       --header 'Authorization: Bearer {api_token}' \
+ *       --header 'Content-Type: application/json' \
+ *       --data-raw '{
+ *           "email": "user@example.com",
+ *           "region_id": "{region_id}"
+ *           "items": [
+ *              {
+ *                "quantity": 1
+ *              }
+ *           ],
+ *           "shipping_methods": [
+ *              {
+ *                "option_id": "{option_id}"
+ *              }
+ *           ]
+ *       }'
+ * security:
+ *   - api_token: []
+ *   - cookie_auth: []
  * tags:
  *   - Draft Order
  * responses:
@@ -127,15 +178,38 @@ import { validator } from "../../../../utils/validator"
  *           properties:
  *             draft_order:
  *               $ref: "#/components/schemas/draft-order"
+ *   "400":
+ *     $ref: "#/components/responses/400_error"
+ *   "401":
+ *     $ref: "#/components/responses/unauthorized"
+ *   "404":
+ *     $ref: "#/components/responses/not_found_error"
+ *   "409":
+ *     $ref: "#/components/responses/invalid_state_error"
+ *   "422":
+ *     $ref: "#/components/responses/invalid_request_error"
+ *   "500":
+ *     $ref: "#/components/responses/500_error"
  */
 
 export default async (req, res) => {
   const validated = await validator(AdminPostDraftOrdersReq, req.body)
 
-  const value = transformIdableFields(validated, [
-    "shipping_address",
-    "billing_address",
-  ])
+  const { shipping_address, billing_address, ...rest } = validated
+
+  const draftOrderDataToCreate: DraftOrderCreateProps = { ...rest }
+
+  if (typeof shipping_address === "string") {
+    draftOrderDataToCreate.shipping_address_id = shipping_address
+  } else {
+    draftOrderDataToCreate.shipping_address = shipping_address
+  }
+
+  if (typeof billing_address === "string") {
+    draftOrderDataToCreate.billing_address_id = billing_address
+  } else {
+    draftOrderDataToCreate.billing_address = billing_address
+  }
 
   const draftOrderService: DraftOrderService =
     req.scope.resolve("draftOrderService")
@@ -145,7 +219,7 @@ export default async (req, res) => {
     async (transactionManager) => {
       return await draftOrderService
         .withTransaction(transactionManager)
-        .create(value)
+        .create(draftOrderDataToCreate)
     }
   )
 
@@ -171,12 +245,12 @@ export class AdminPostDraftOrdersReq {
   email: string
 
   @IsOptional()
-  @Type(() => AddressPayload)
-  billing_address?: AddressPayload
+  @IsType([AddressPayload, String])
+  billing_address?: AddressPayload | string
 
   @IsOptional()
-  @Type(() => AddressPayload)
-  shipping_address?: AddressPayload
+  @IsType([AddressPayload, String])
+  shipping_address?: AddressPayload | string
 
   @IsArray()
   @Type(() => Item)

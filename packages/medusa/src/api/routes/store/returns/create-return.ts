@@ -8,14 +8,13 @@ import {
   ValidateNested,
 } from "class-validator"
 
+import { Type } from "class-transformer"
+import { MedusaError } from "medusa-core-utils"
+import { EntityManager } from "typeorm"
 import EventBusService from "../../../../services/event-bus"
 import IdempotencyKeyService from "../../../../services/idempotency-key"
-import { MedusaError } from "medusa-core-utils"
-import OrderService from "../../../../services/order"
 import ReturnService from "../../../../services/return"
-import { Type } from "class-transformer"
 import { validator } from "../../../../utils/validator"
-import { EntityManager } from "typeorm";
 
 /**
  * @oas [post] /returns
@@ -62,6 +61,38 @@ import { EntityManager } from "typeorm";
  *               option_id:
  *                 type: string
  *                 description: The ID of the Shipping Option to create the Shipping Method from.
+ * x-codeSamples:
+ *   - lang: JavaScript
+ *     label: JS Client
+ *     source: |
+ *       import Medusa from "@medusajs/medusa-js"
+ *       const medusa = new Medusa({ baseUrl: MEDUSA_BACKEND_URL, maxRetries: 3 })
+ *       medusa.returns.create({
+ *         order_id,
+ *         items: [
+ *           {
+ *             item_id,
+ *             quantity: 1
+ *           }
+ *         ]
+ *       })
+ *       .then((data) => {
+ *         console.log(data.return.id);
+ *       });
+ *   - lang: Shell
+ *     label: cURL
+ *     source: |
+ *       curl --location --request POST 'https://medusa-url.com/store/returns' \
+ *       --header 'Content-Type: application/json' \
+ *       --data-raw '{
+ *           "order_id": "asfasf",
+ *           "items": [
+ *             {
+ *               "item_id": "assfasf",
+ *               "quantity": 1
+ *             }
+ *           ]
+ *       }'
  * tags:
  *   - Return
  * responses:
@@ -73,6 +104,16 @@ import { EntityManager } from "typeorm";
  *           properties:
  *             return:
  *               $ref: "#/components/schemas/return"
+ *   "400":
+ *     $ref: "#/components/responses/400_error"
+ *   "404":
+ *     $ref: "#/components/responses/not_found_error"
+ *   "409":
+ *     $ref: "#/components/responses/invalid_state_error"
+ *   "422":
+ *     $ref: "#/components/responses/invalid_request_error"
+ *   "500":
+ *     $ref: "#/components/responses/500_error"
  */
 export default async (req, res) => {
   const returnDto = await validator(StorePostReturnsReq, req.body)
@@ -87,12 +128,9 @@ export default async (req, res) => {
   let idempotencyKey
   try {
     await manager.transaction(async (transactionManager) => {
-      idempotencyKey = await idempotencyKeyService.withTransaction(transactionManager).initializeRequest(
-        headerKey,
-        req.method,
-        req.params,
-        req.path
-      )
+      idempotencyKey = await idempotencyKeyService
+        .withTransaction(transactionManager)
+        .initializeRequest(headerKey, req.method, req.params, req.path)
     })
   } catch (error) {
     res.status(409).send("Failed to create idempotency key")
@@ -103,7 +141,6 @@ export default async (req, res) => {
   res.setHeader("Idempotency-Key", idempotencyKey.idempotency_key)
 
   try {
-    const orderService: OrderService = req.scope.resolve("orderService")
     const returnService: ReturnService = req.scope.resolve("returnService")
     const eventBus: EventBusService = req.scope.resolve("eventBusService")
 
@@ -113,19 +150,11 @@ export default async (req, res) => {
     while (inProgress) {
       switch (idempotencyKey.recovery_point) {
         case "started": {
-          await manager.transaction(async (transactionManager) => {
-            const { key, error } = await idempotencyKeyService
-              .withTransaction(transactionManager)
-              .workStage(
-                idempotencyKey.idempotency_key,
-                async (manager) => {
-                  const order = await orderService
-                    .withTransaction(manager)
-                    .retrieve(returnDto.order_id, {
-                      select: ["refunded_total", "total"],
-                      relations: ["items"],
-                    })
-
+          await manager
+            .transaction("SERIALIZABLE", async (transactionManager) => {
+              idempotencyKey = await idempotencyKeyService
+                .withTransaction(transactionManager)
+                .workStage(idempotencyKey.idempotency_key, async (manager) => {
                   const returnObj: any = {
                     order_id: returnDto.order_id,
                     idempotency_key: idempotencyKey.idempotency_key,
@@ -156,56 +185,49 @@ export default async (req, res) => {
                   return {
                     recovery_point: "return_requested",
                   }
-                }
-              )
-
-            if (error) {
+                })
+            })
+            .catch((e) => {
               inProgress = false
-              err = error
-            } else {
-              idempotencyKey = key
-            }
-          })
+              err = e
+            })
           break
         }
 
         case "return_requested": {
-          await manager.transaction(async (transactionManager) => {
-            const { key, error } = await idempotencyKeyService
-              .withTransaction(transactionManager)
-              .workStage(
-                idempotencyKey.idempotency_key,
-                async (manager) => {
-                  let ret = await returnService.withTransaction(manager).list(
-                    {
-                      idempotency_key: idempotencyKey.idempotency_key,
-                    },
-                    {
-                      relations: ["items", "items.reason"],
-                    }
-                  )
-                  if (!ret.length) {
+          await manager
+            .transaction("SERIALIZABLE", async (transactionManager) => {
+              idempotencyKey = await idempotencyKeyService
+                .withTransaction(transactionManager)
+                .workStage(idempotencyKey.idempotency_key, async (manager) => {
+                  const returnOrders = await returnService
+                    .withTransaction(manager)
+                    .list(
+                      {
+                        idempotency_key: idempotencyKey.idempotency_key,
+                      },
+                      {
+                        relations: ["items", "items.reason"],
+                      }
+                    )
+                  if (!returnOrders.length) {
                     throw new MedusaError(
                       MedusaError.Types.INVALID_DATA,
                       `Return not found`
                     )
                   }
-                  ret = ret[0]
+                  const returnOrder = returnOrders[0]
 
                   return {
                     response_code: 200,
-                    response_body: { return: ret },
+                    response_body: { return: returnOrder },
                   }
-                }
-              )
-
-            if (error) {
+                })
+            })
+            .catch((e) => {
               inProgress = false
-              err = error
-            } else {
-              idempotencyKey = key
-            }
-          })
+              err = e
+            })
           break
         }
 
@@ -218,14 +240,11 @@ export default async (req, res) => {
           await manager.transaction(async (transactionManager) => {
             idempotencyKey = await idempotencyKeyService
               .withTransaction(transactionManager)
-              .update(
-                idempotencyKey.idempotency_key,
-                {
-                  recovery_point: "finished",
-                  response_code: 500,
-                  response_body: { message: "Unknown recovery point" },
-                }
-              )
+              .update(idempotencyKey.idempotency_key, {
+                recovery_point: "finished",
+                response_code: 500,
+                response_body: { message: "Unknown recovery point" },
+              })
           })
           break
       }

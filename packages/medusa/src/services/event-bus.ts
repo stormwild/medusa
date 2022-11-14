@@ -10,11 +10,20 @@ type InjectedDependencies = {
   manager: EntityManager
   logger: Logger
   stagedJobRepository: typeof StagedJobRepository
-  redisClient: Redis
-  redisSubscriber: Redis
+  redisClient: Redis.Redis
+  redisSubscriber: Redis.Redis
 }
 
 type Subscriber<T = unknown> = (data: T, eventName: string) => Promise<void>
+
+type EmitOptions = {
+  delay?: number
+  attempts?: number
+  backoff?: {
+    type: "fixed" | "exponential"
+    delay: number
+  }
+}
 
 /**
  * Can keep track of multiple subscribers to different events and run the
@@ -27,8 +36,8 @@ export default class EventBusService {
   protected readonly stagedJobRepository_: typeof StagedJobRepository
   protected readonly observers_: Map<string | symbol, Subscriber[]>
   protected readonly cronHandlers_: Map<string | symbol, Subscriber[]>
-  protected readonly redisClient_: Redis
-  protected readonly redisSubscriber_: Redis
+  protected readonly redisClient_: Redis.Redis
+  protected readonly redisSubscriber_: Redis.Redis
   protected readonly cronQueue_: Bull
   protected queue_: Bull
   protected shouldEnqueuerRun: boolean
@@ -47,7 +56,7 @@ export default class EventBusService {
     singleton = true
   ) {
     const opts = {
-      createClient: (type: string): Redis => {
+      createClient: (type: string): Redis.Redis => {
         switch (type) {
           case "client":
             return redisClient
@@ -179,7 +188,7 @@ export default class EventBusService {
   async emit<T>(
     eventName: string,
     data: T,
-    options: { delay?: number } = {}
+    options: EmitOptions = {}
   ): Promise<StagedJob | void> {
     if (this.transactionManager_) {
       const stagedJobRepository = this.transactionManager_.getCustomRepository(
@@ -192,8 +201,14 @@ export default class EventBusService {
       })
       return await stagedJobRepository.save(stagedJobInstance)
     } else {
-      const opts: { removeOnComplete: boolean; delay?: number } = {
+      const opts: { removeOnComplete: boolean } & EmitOptions = {
         removeOnComplete: true,
+      }
+      if (typeof options.attempts === "number") {
+        opts.attempts = options.attempts
+        if (typeof options.backoff !== "undefined") {
+          opts.backoff = options.backoff
+        }
       }
       if (typeof options.delay === "number") {
         opts.delay = options.delay
@@ -261,7 +276,7 @@ export default class EventBusService {
     )
 
     return await Promise.all(
-      observers.map((subscriber) => {
+      observers.map(async (subscriber) => {
         return subscriber(data, eventName).catch((err) => {
           this.logger_.warn(
             `An error occurred while processing ${eventName}: ${err}`
@@ -286,7 +301,7 @@ export default class EventBusService {
     this.logger_.info(`Processing cron job: ${eventName}`)
 
     return await Promise.all(
-      observers.map((subscriber) => {
+      observers.map(async (subscriber) => {
         return subscriber(data, eventName).catch((err) => {
           this.logger_.warn(
             `An error occured while processing ${eventName}: ${err}`

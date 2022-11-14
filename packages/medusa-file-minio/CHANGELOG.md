@@ -1,5 +1,24 @@
 # Change Log
 
+## 1.1.1
+
+### Patch Changes
+
+- [#2433](https://github.com/medusajs/medusa/pull/2433) [`3c5e31c64`](https://github.com/medusajs/medusa/commit/3c5e31c6455695f854e9df7a3592c12b899fa1e1) Thanks [@pKorsholm](https://github.com/pKorsholm)! - Add protected uploads to fileservices
+
+## 1.1.0
+
+### Minor Changes
+
+- [#2159](https://github.com/medusajs/medusa/pull/2159) [`70cf3f1f2`](https://github.com/medusajs/medusa/commit/70cf3f1f2c314dff08dbd53bbe4e5d278958cf67) Thanks [@shahednasser](https://github.com/shahednasser)! - Version bump
+
+## 1.0.10
+
+### Patch Changes
+
+- Updated dependencies [[`c97ccd3fb`](https://github.com/medusajs/medusa/commit/c97ccd3fb5dbe796b0e4fbf37def5bb6e8201557)]:
+  - medusa-interfaces@1.3.3
+
 ## 1.0.9
 
 ### Patch Changes

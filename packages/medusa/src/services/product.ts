@@ -7,6 +7,7 @@ import { TransactionBaseService } from "../interfaces"
 import SalesChannelFeatureFlag from "../loaders/feature-flags/sales-channels"
 import {
   Product,
+  ProductOption,
   ProductTag,
   ProductType,
   ProductVariant,
@@ -27,10 +28,10 @@ import {
   FilterableProductProps,
   FindProductConfig,
   ProductOptionInput,
+  ProductSelector,
   UpdateProductInput,
 } from "../types/product"
 import { buildQuery, isDefined, setMetadata } from "../utils"
-import { formatException } from "../utils/exception-formatter"
 import EventBusService from "./event-bus"
 
 type InjectedDependencies = {
@@ -107,7 +108,7 @@ class ProductService extends TransactionBaseService {
    * @return the result of the find operation
    */
   async list(
-    selector: FilterableProductProps | Selector<Product> = {},
+    selector: ProductSelector,
     config: FindProductConfig = {
       relations: [],
       skip: 0,
@@ -115,20 +116,8 @@ class ProductService extends TransactionBaseService {
       include_discount_prices: false,
     }
   ): Promise<Product[]> {
-    const manager = this.manager_
-    const productRepo = manager.getCustomRepository(this.productRepository_)
-
-    const { q, query, relations } = this.prepareListQuery_(selector, config)
-    if (q) {
-      const [products] = await productRepo.getFreeTextSearchResultsAndCount(
-        q,
-        query,
-        relations
-      )
-      return products
-    }
-
-    return await productRepo.findWithRelations(relations, query)
+    const [products] = await this.listAndCount(selector, config)
+    return products
   }
 
   /**
@@ -143,7 +132,7 @@ class ProductService extends TransactionBaseService {
    *   as the second element.
    */
   async listAndCount(
-    selector: FilterableProductProps | Selector<Product>,
+    selector: ProductSelector,
     config: FindProductConfig = {
       relations: [],
       skip: 0,
@@ -372,61 +361,57 @@ class ProductService extends TransactionBaseService {
         rest.discountable = false
       }
 
-      try {
-        let product = productRepo.create(rest)
+      let product = productRepo.create(rest)
 
-        if (images?.length) {
-          product.images = await imageRepo.upsertImages(images)
-        }
+      if (images?.length) {
+        product.images = await imageRepo.upsertImages(images)
+      }
 
-        if (tags?.length) {
-          product.tags = await productTagRepo.upsertTags(tags)
-        }
+      if (tags?.length) {
+        product.tags = await productTagRepo.upsertTags(tags)
+      }
 
-        if (typeof type !== `undefined`) {
-          product.type_id = (await productTypeRepo.upsertType(type))?.id || null
-        }
+      if (typeof type !== `undefined`) {
+        product.type_id = (await productTypeRepo.upsertType(type))?.id || null
+      }
 
-        if (
-          this.featureFlagRouter_.isFeatureEnabled(SalesChannelFeatureFlag.key)
-        ) {
-          if (isDefined(salesChannels)) {
-            product.sales_channels = []
-            if (salesChannels?.length) {
-              const salesChannelIds = salesChannels?.map((sc) => sc.id)
-              product.sales_channels = salesChannelIds?.map(
-                (id) => ({ id } as SalesChannel)
-              )
-            }
+      if (
+        this.featureFlagRouter_.isFeatureEnabled(SalesChannelFeatureFlag.key)
+      ) {
+        if (isDefined(salesChannels)) {
+          product.sales_channels = []
+          if (salesChannels?.length) {
+            const salesChannelIds = salesChannels?.map((sc) => sc.id)
+            product.sales_channels = salesChannelIds?.map(
+              (id) => ({ id } as SalesChannel)
+            )
           }
         }
-
-        product = await productRepo.save(product)
-
-        product.options = await Promise.all(
-          (options ?? []).map(async (option) => {
-            const res = optionRepo.create({
-              ...option,
-              product_id: product.id,
-            })
-            await optionRepo.save(res)
-            return res
-          })
-        )
-
-        const result = await this.retrieve(product.id, {
-          relations: ["options"],
-        })
-
-        await this.eventBus_
-          .withTransaction(manager)
-          .emit(ProductService.Events.CREATED, {
-            id: result.id,
-          })
-        return result
-      } catch (error) {
-        throw formatException(error)
       }
+
+      product = await productRepo.save(product)
+
+      product.options = await Promise.all(
+        (options ?? []).map(async (option) => {
+          const res = optionRepo.create({
+            ...option,
+            product_id: product.id,
+          })
+          await optionRepo.save(res)
+          return res
+        })
+      )
+
+      const result = await this.retrieve(product.id, {
+        relations: ["options"],
+      })
+
+      await this.eventBus_
+        .withTransaction(manager)
+        .emit(ProductService.Events.CREATED, {
+          id: result.id,
+        })
+      return result
     })
   }
 
@@ -648,7 +633,7 @@ class ProductService extends TransactionBaseService {
         )
       }
 
-      const option = await productOptionRepo.create({
+      const option = productOptionRepo.create({
         title: optionTitle,
         product_id: productId,
       })
@@ -771,6 +756,26 @@ class ProductService extends TransactionBaseService {
   }
 
   /**
+   * Retrieve product's option by title.
+   *
+   * @param title - title of the option
+   * @param productId - id of a product
+   * @return product option
+   */
+  async retrieveOptionByTitle(
+    title: string,
+    productId: string
+  ): Promise<ProductOption | undefined> {
+    const productOptionRepo = this.manager_.getCustomRepository(
+      this.productOptionRepository_
+    )
+
+    return productOptionRepo.findOne({
+      where: { title, product_id: productId },
+    })
+  }
+
+  /**
    * Delete an option from a product.
    * @param productId - the product to delete an option from
    * @param optionId - the option to delete
@@ -791,38 +796,44 @@ class ProductService extends TransactionBaseService {
 
       const productOption = await productOptionRepo.findOne({
         where: { id: optionId, product_id: productId },
+        relations: ["values"],
       })
 
       if (!productOption) {
         return Promise.resolve()
       }
 
-      // For the option we want to delete, make sure that all variants have the
-      // same option values. The reason for doing is, that we want to avoid
-      // duplicate variants. For example, if we have a product with size and
-      // color options, that has four variants: (black, 1), (black, 2),
-      // (blue, 1), (blue, 2) and we delete the size option from the product,
-      // we would end up with four variants: (black), (black), (blue), (blue).
-      // We now have two duplicate variants. To ensure that this does not
-      // happen, we will force the user to select which variants to keep.
-      const firstVariant = product.variants[0]
+      // In case the product does not contain variants, we can safely delete the option
+      // If it does contain variants, we need to make sure no variant exist for the
+      // product option to delete
+      if (product?.variants?.length) {
+        // For the option we want to delete, make sure that all variants have the
+        // same option values. The reason for doing is, that we want to avoid
+        // duplicate variants. For example, if we have a product with size and
+        // color options, that has four variants: (black, 1), (black, 2),
+        // (blue, 1), (blue, 2) and we delete the size option from the product,
+        // we would end up with four variants: (black), (black), (blue), (blue).
+        // We now have two duplicate variants. To ensure that this does not
+        // happen, we will force the user to select which variants to keep.
+        const firstVariant = product.variants[0]
 
-      const valueToMatch = firstVariant.options.find(
-        (o) => o.option_id === optionId
-      )?.value
+        const valueToMatch = firstVariant.options.find(
+          (o) => o.option_id === optionId
+        )?.value
 
-      const equalsFirst = await Promise.all(
-        product.variants.map(async (v) => {
-          const option = v.options.find((o) => o.option_id === optionId)
-          return option?.value === valueToMatch
-        })
-      )
-
-      if (!equalsFirst.every((v) => v)) {
-        throw new MedusaError(
-          MedusaError.Types.INVALID_DATA,
-          `To delete an option, first delete all variants, such that when an option is deleted, no duplicate variants will exist.`
+        const equalsFirst = await Promise.all(
+          product.variants.map(async (v) => {
+            const option = v.options.find((o) => o.option_id === optionId)
+            return option?.value === valueToMatch
+          })
         )
+
+        if (!equalsFirst.every((v) => v)) {
+          throw new MedusaError(
+            MedusaError.Types.INVALID_DATA,
+            `To delete an option, first delete all variants, such that when an option is deleted, no duplicate variants will exist.`
+          )
+        }
       }
 
       // If we reach this point, we can safely delete the product option

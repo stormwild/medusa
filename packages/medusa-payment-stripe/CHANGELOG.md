@@ -1,5 +1,43 @@
 # Change Log
 
+## 1.1.47
+
+### Patch Changes
+
+- [#2581](https://github.com/medusajs/medusa/pull/2581) [`04e894ec3`](https://github.com/medusajs/medusa/commit/04e894ec39e1008be893a6cf313c3822a085579c) Thanks [@olivermrbl](https://github.com/olivermrbl)! - Support provider specific intent options
+
+## 1.1.46
+
+### Patch Changes
+
+- [`715bdf6b1`](https://github.com/medusajs/medusa/commit/715bdf6b159d6eb291d3c489ab32a80f9eadcfb9) Thanks [@olivermrbl](https://github.com/olivermrbl)! - Patch bump Stripe plugin
+
+## 1.1.45
+
+### Patch Changes
+
+- [`a014e3623`](https://github.com/medusajs/medusa/commit/a014e3623c64f747e7496abccb8d0c7c01093d8b) Thanks [@olivermrbl](https://github.com/olivermrbl)! - Support automatic payment methods
+
+## 1.1.44
+
+### Patch Changes
+
+- [#2381](https://github.com/medusajs/medusa/pull/2381) [`a908a7716`](https://github.com/medusajs/medusa/commit/a908a7716c94222f340531a5b13db0867b511519) Thanks [@srindom](https://github.com/srindom)! - Rely on cart totals in payment providers
+
+* [#1790](https://github.com/medusajs/medusa/pull/1790) [`df62e618b`](https://github.com/medusajs/medusa/commit/df62e618bcc365ef376b96705d63b465b48b0191) Thanks [@adrien2p](https://github.com/adrien2p)! - Migrate Stripe providers to the new AbstractPaymentService
+
+* Updated dependencies [[`7dc8d3a0c`](https://github.com/medusajs/medusa/commit/7dc8d3a0c90ce06e3f11a6a46dec1f9ec3f26e81)]:
+  - medusa-core-utils@1.1.32
+
+## 1.1.43
+
+### Patch Changes
+
+- [#1982](https://github.com/medusajs/medusa/pull/1982) [`40ae53567`](https://github.com/medusajs/medusa/commit/40ae53567a23ebe562e571fa22f1721eed174c82) Thanks [@chemicalkosek](https://github.com/chemicalkosek)! - Add payment providers Przelewy24 and Blik through Stripe
+
+- Updated dependencies [[`c97ccd3fb`](https://github.com/medusajs/medusa/commit/c97ccd3fb5dbe796b0e4fbf37def5bb6e8201557)]:
+  - medusa-interfaces@1.3.3
+
 ## 1.1.42
 
 ### Patch Changes

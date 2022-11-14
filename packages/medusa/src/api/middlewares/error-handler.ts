@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from "express"
 import { MedusaError } from "medusa-core-utils"
 import { Logger } from "../../types/global"
+import { formatException } from "../../utils";
 
 const QUERY_RUNNER_RELEASED = "QueryRunnerAlreadyReleasedError"
 const TRANSACTION_STARTED = "TransactionAlreadyStartedError"
@@ -18,6 +19,9 @@ export default () => {
     next: NextFunction
   ) => {
     const logger: Logger = req.scope.resolve("logger")
+
+    err = formatException(err)
+
     logger.error(err)
 
     const errorType = err.type || err.name
@@ -67,3 +71,19 @@ export default () => {
     res.status(statusCode).json(errObj)
   }
 }
+
+/**
+ * @schema error
+ * title: "Response Error"
+ * x-resourceId: error
+ * properties:
+ *  code:
+ *    type: string
+ *    description: A slug code to indicate the type of the error.
+ *  message:
+ *    type: string
+ *    description: Description of the error that occurred.
+ *  type:
+ *    type: string
+ *    description: A slug indicating the type of the error.
+ */

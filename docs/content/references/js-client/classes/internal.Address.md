@@ -22,7 +22,7 @@ Base abstract entity for all entities
 
 #### Defined in
 
-medusa/dist/models/address.d.ts:37
+medusa/dist/models/address.d.ts:10
 
 ___
 
@@ -32,7 +32,7 @@ ___
 
 #### Defined in
 
-medusa/dist/models/address.d.ts:38
+medusa/dist/models/address.d.ts:11
 
 ___
 
@@ -42,7 +42,7 @@ ___
 
 #### Defined in
 
-medusa/dist/models/address.d.ts:46
+medusa/dist/models/address.d.ts:19
 
 ___
 
@@ -52,7 +52,7 @@ ___
 
 #### Defined in
 
-medusa/dist/models/address.d.ts:39
+medusa/dist/models/address.d.ts:12
 
 ___
 
@@ -62,7 +62,7 @@ ___
 
 #### Defined in
 
-medusa/dist/models/address.d.ts:34
+medusa/dist/models/address.d.ts:7
 
 ___
 
@@ -72,7 +72,7 @@ ___
 
 #### Defined in
 
-medusa/dist/models/address.d.ts:41
+medusa/dist/models/address.d.ts:14
 
 ___
 
@@ -82,7 +82,7 @@ ___
 
 #### Defined in
 
-medusa/dist/models/address.d.ts:40
+medusa/dist/models/address.d.ts:13
 
 ___
 
@@ -106,7 +106,7 @@ ___
 
 #### Defined in
 
-medusa/dist/models/address.d.ts:33
+medusa/dist/models/address.d.ts:6
 
 ___
 
@@ -116,7 +116,7 @@ ___
 
 #### Defined in
 
-medusa/dist/models/address.d.ts:32
+medusa/dist/models/address.d.ts:5
 
 ___
 
@@ -140,7 +140,7 @@ ___
 
 #### Defined in
 
-medusa/dist/models/address.d.ts:35
+medusa/dist/models/address.d.ts:8
 
 ___
 
@@ -164,7 +164,7 @@ ___
 
 #### Defined in
 
-medusa/dist/models/address.d.ts:36
+medusa/dist/models/address.d.ts:9
 
 ___
 
@@ -174,7 +174,7 @@ ___
 
 #### Defined in
 
-medusa/dist/models/address.d.ts:45
+medusa/dist/models/address.d.ts:18
 
 ___
 
@@ -184,7 +184,7 @@ ___
 
 #### Defined in
 
-medusa/dist/models/address.d.ts:44
+medusa/dist/models/address.d.ts:17
 
 ___
 
@@ -194,7 +194,7 @@ ___
 
 #### Defined in
 
-medusa/dist/models/address.d.ts:43
+medusa/dist/models/address.d.ts:16
 
 ___
 
@@ -204,7 +204,7 @@ ___
 
 #### Defined in
 
-medusa/dist/models/address.d.ts:42
+medusa/dist/models/address.d.ts:15
 
 ___
 

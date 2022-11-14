@@ -4,13 +4,12 @@ import { TransactionBaseService } from "../interfaces"
 import { ProductCollection } from "../models"
 import { ProductRepository } from "../repositories/product"
 import { ProductCollectionRepository } from "../repositories/product-collection"
-import { ExtendedFindConfig, FindConfig, QuerySelector } from "../types/common"
+import { FindConfig, Selector } from "../types/common"
 import {
   CreateProductCollection,
   UpdateProductCollection,
 } from "../types/product-collection"
-import { buildQuery, setMetadata } from "../utils"
-import { formatException } from "../utils/exception-formatter"
+import { buildQuery, isString, setMetadata } from "../utils"
 import EventBusService from "./event-bus"
 
 type InjectedDependencies = {
@@ -28,7 +27,7 @@ class ProductCollectionService extends TransactionBaseService {
   protected transactionManager_: EntityManager | undefined
 
   protected readonly eventBus_: EventBusService
-
+  // eslint-disable-next-line max-len
   protected readonly productCollectionRepository_: typeof ProductCollectionRepository
   protected readonly productRepository_: typeof ProductRepository
 
@@ -38,12 +37,7 @@ class ProductCollectionService extends TransactionBaseService {
     productRepository,
     eventBusService,
   }: InjectedDependencies) {
-    super({
-      manager,
-      productCollectionRepository,
-      productRepository,
-      eventBusService,
-    })
+    super(arguments[0])
     this.manager_ = manager
 
     this.productCollectionRepository_ = productCollectionRepository
@@ -118,12 +112,8 @@ class ProductCollectionService extends TransactionBaseService {
         this.productCollectionRepository_
       )
 
-      try {
-        const productCollection = await collectionRepo.create(collection)
-        return await collectionRepo.save(productCollection)
-      } catch (error) {
-        throw formatException(error)
-      }
+      const productCollection = collectionRepo.create(collection)
+      return await collectionRepo.save(productCollection)
     })
   }
 
@@ -188,17 +178,13 @@ class ProductCollectionService extends TransactionBaseService {
     return await this.atomicPhase_(async (manager) => {
       const productRepo = manager.getCustomRepository(this.productRepository_)
 
-      try {
-        const { id } = await this.retrieve(collectionId, { select: ["id"] })
+      const { id } = await this.retrieve(collectionId, { select: ["id"] })
 
-        await productRepo.bulkAddToCollection(productIds, id)
+      await productRepo.bulkAddToCollection(productIds, id)
 
-        return await this.retrieve(id, {
-          relations: ["products"],
-        })
-      } catch (error) {
-        throw formatException(error)
-      }
+      return await this.retrieve(id, {
+        relations: ["products"],
+      })
     })
   }
 
@@ -224,15 +210,14 @@ class ProductCollectionService extends TransactionBaseService {
    * @return the result of the find operation
    */
   async list(
-    selector = {},
+    selector: Selector<ProductCollection> & {
+      q?: string
+      discount_condition_id?: string
+    } = {},
     config = { skip: 0, take: 20 }
   ): Promise<ProductCollection[]> {
-    const productCollectionRepo = this.manager_.getCustomRepository(
-      this.productCollectionRepository_
-    )
-
-    const query = buildQuery(selector, config)
-    return await productCollectionRepo.find(query)
+    const [collections] = await this.listAndCount(selector, config)
+    return collections
   }
 
   /**
@@ -242,7 +227,10 @@ class ProductCollectionService extends TransactionBaseService {
    * @return the result of the find operation
    */
   async listAndCount(
-    selector: QuerySelector<ProductCollection> = {},
+    selector: Selector<ProductCollection> & {
+      q?: string
+      discount_condition_id?: string
+    } = {},
     config: FindConfig<ProductCollection> = { skip: 0, take: 20 }
   ): Promise<[ProductCollection[], number]> {
     const productCollectionRepo = this.manager_.getCustomRepository(
@@ -250,17 +238,12 @@ class ProductCollectionService extends TransactionBaseService {
     )
 
     let q
-    if ("q" in selector) {
+    if (isString(selector.q)) {
       q = selector.q
       delete selector.q
     }
 
-    const query = buildQuery(
-      selector,
-      config
-    ) as ExtendedFindConfig<ProductCollection> & {
-      where: (qb: any) => void
-    }
+    const query = buildQuery(selector, config)
 
     if (q) {
       const where = query.where
@@ -281,6 +264,15 @@ class ProductCollectionService extends TransactionBaseService {
           })
         )
       }
+    }
+
+    if (query.where.discount_condition_id) {
+      const discountConditionId = query.where.discount_condition_id as string
+      delete query.where.discount_condition_id
+      return await productCollectionRepo.findAndCountByDiscountConditionId(
+        discountConditionId,
+        query
+      )
     }
 
     return await productCollectionRepo.findAndCount(query)

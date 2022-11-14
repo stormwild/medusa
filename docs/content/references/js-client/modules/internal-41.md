@@ -2,22 +2,30 @@
 
 ## Classes
 
-- [Item](../classes/internal-41.Item.md)
-- [ReturnShipping](../classes/internal-41.ReturnShipping.md)
-- [StorePostReturnsReq](../classes/internal-41.StorePostReturnsReq.md)
+- [StoreGetVariantsParams](../classes/internal-41.StoreGetVariantsParams.md)
 
 ## Type Aliases
 
-### StoreReturnsRes
+### StoreVariantsListRes
 
-Ƭ **StoreReturnsRes**: `Object`
+Ƭ **StoreVariantsListRes**: [`PaginatedResponse`](internal-2.md#paginatedresponse) & { `variants`: [`ProductVariant`](../classes/internal.ProductVariant.md)[]  }
+
+#### Defined in
+
+medusa/dist/api/routes/store/variants/index.d.ts:9
+
+___
+
+### StoreVariantsRes
+
+Ƭ **StoreVariantsRes**: `Object`
 
 #### Type declaration
 
 | Name | Type |
 | :------ | :------ |
-| `return` | [`Return`](../classes/internal.Return.md) |
+| `variant` | [`ProductVariant`](../classes/internal.ProductVariant.md) |
 
 #### Defined in
 
-medusa/dist/api/routes/store/returns/index.d.ts:4
+medusa/dist/api/routes/store/variants/index.d.ts:6

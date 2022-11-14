@@ -1,4 +1,4 @@
-import { CartService, DraftOrderService } from "../../../../services"
+import { Type } from "class-transformer"
 import {
   IsArray,
   IsBoolean,
@@ -7,22 +7,22 @@ import {
   IsString,
   ValidateNested,
 } from "class-validator"
+import { MedusaError } from "medusa-core-utils"
+import { EntityManager } from "typeorm"
 import {
   defaultAdminDraftOrdersCartFields,
   defaultAdminDraftOrdersCartRelations,
 } from "."
-
-import { AddressPayload } from "../../../../types/common"
 import { DraftOrderStatus } from "../../../../models"
-import { EntityManager } from "typeorm"
-import { MedusaError } from "medusa-core-utils"
-import { Type } from "class-transformer"
+import { CartService, DraftOrderService } from "../../../../services"
+import { CartUpdateProps } from "../../../../types/cart"
+import { AddressPayload } from "../../../../types/common"
 import { validator } from "../../../../utils/validator"
-
+import { IsType } from "../../../../utils/validators/is-type"
 /**
  * @oas [post] /admin/draft-orders/{id}
  * operationId: PostDraftOrdersDraftOrder
- * summary: Update a Draft Order"
+ * summary: Update a Draft Order
  * description: "Updates a Draft Order."
  * x-authenticated: true
  * parameters:
@@ -47,10 +47,14 @@ import { validator } from "../../../../utils/validator"
  *             format: email
  *           billing_address:
  *             description: "The Address to be used for billing purposes."
- *             $ref: "#/components/schemas/address"
+ *             anyOf:
+ *               - $ref: "#/components/schemas/address_fields"
+ *               - type: string
  *           shipping_address:
  *             description: "The Address to be used for shipping."
- *             $ref: "#/components/schemas/address"
+ *             anyOf:
+ *               - $ref: "#/components/schemas/address_fields"
+ *               - type: string
  *           discounts:
  *             description: "An array of Discount codes to add to the Draft Order."
  *             type: array
@@ -68,6 +72,31 @@ import { validator } from "../../../../utils/validator"
  *           customer_id:
  *             description: "The ID of the Customer to associate the Draft Order with."
  *             type: string
+ * x-codeSamples:
+ *   - lang: JavaScript
+ *     label: JS Client
+ *     source: |
+ *       import Medusa from "@medusajs/medusa-js"
+ *       const medusa = new Medusa({ baseUrl: MEDUSA_BACKEND_URL, maxRetries: 3 })
+ *       // must be previously logged in or use api token
+ *       medusa.admin.draftOrders.update(draft_order_id, {
+ *         email: "user@example.com"
+ *       })
+ *       .then(({ draft_order }) => {
+ *         console.log(draft_order.id);
+ *       });
+ *   - lang: Shell
+ *     label: cURL
+ *     source: |
+ *       curl --location --request POST 'https://medusa-url.com/admin/draft-orders/{id}' \
+ *       --header 'Authorization: Bearer {api_token}' \
+ *       --header 'Content-Type: application/json' \
+ *       --data-raw '{
+ *           "email": "user@example.com"
+ *       }'
+ * security:
+ *   - api_token: []
+ *   - cookie_auth: []
  * tags:
  *   - Draft Order
  * responses:
@@ -79,6 +108,18 @@ import { validator } from "../../../../utils/validator"
  *           properties:
  *             draft_order:
  *               $ref: "#/components/schemas/draft-order"
+ *   "400":
+ *     $ref: "#/components/responses/400_error"
+ *   "401":
+ *     $ref: "#/components/responses/unauthorized"
+ *   "404":
+ *     $ref: "#/components/responses/not_found_error"
+ *   "409":
+ *     $ref: "#/components/responses/invalid_state_error"
+ *   "422":
+ *     $ref: "#/components/responses/invalid_request_error"
+ *   "500":
+ *     $ref: "#/components/responses/500_error"
  */
 
 export default async (req, res) => {
@@ -88,6 +129,7 @@ export default async (req, res) => {
 
   const draftOrderService: DraftOrderService =
     req.scope.resolve("draftOrderService")
+
   const cartService: CartService = req.scope.resolve("cartService")
 
   const draftOrder = await draftOrderService.retrieve(id)
@@ -110,9 +152,23 @@ export default async (req, res) => {
       delete validated.no_notification_order
     }
 
-    await cartService
-      .withTransaction(transactionManager)
-      .update(draftOrder.cart_id, validated)
+    const { shipping_address, billing_address, ...rest } = validated
+
+    const cartDataToUpdate: CartUpdateProps = { ...rest }
+
+    if (typeof shipping_address === "string") {
+      cartDataToUpdate.shipping_address_id = shipping_address
+    } else {
+      cartDataToUpdate.shipping_address = shipping_address
+    }
+
+    if (typeof billing_address === "string") {
+      cartDataToUpdate.billing_address_id = billing_address
+    } else {
+      cartDataToUpdate.billing_address = billing_address
+    }
+
+    await cartService.update(draftOrder.cart_id, cartDataToUpdate)
   })
 
   draftOrder.cart = await cartService.retrieve(draftOrder.cart_id, {
@@ -137,12 +193,12 @@ export class AdminPostDraftOrdersDraftOrderReq {
   email?: string
 
   @IsOptional()
-  @Type(() => AddressPayload)
-  billing_address?: AddressPayload
+  @IsType([AddressPayload, String])
+  billing_address?: AddressPayload | string
 
   @IsOptional()
-  @Type(() => AddressPayload)
-  shipping_address?: AddressPayload
+  @IsType([AddressPayload, String])
+  shipping_address?: AddressPayload | string
 
   @IsArray()
   @IsOptional()

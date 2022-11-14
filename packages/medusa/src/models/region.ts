@@ -2,6 +2,7 @@ import {
   BeforeInsert,
   Column,
   Entity,
+  Index,
   JoinColumn,
   JoinTable,
   ManyToMany,
@@ -18,12 +19,15 @@ import { SoftDeletableEntity } from "../interfaces/models/soft-deletable-entity"
 import { TaxProvider } from "./tax-provider"
 import { TaxRate } from "./tax-rate"
 import { generateEntityId } from "../utils/generate-entity-id"
+import { FeatureFlagColumn } from "../utils/feature-flag-decorators"
+import TaxInclusivePricingFeatureFlag from "../loaders/feature-flags/tax-inclusive-pricing"
 
 @Entity()
 export class Region extends SoftDeletableEntity {
   @Column()
   name: string
 
+  @Index()
   @Column()
   currency_code: string
 
@@ -93,6 +97,9 @@ export class Region extends SoftDeletableEntity {
   @DbAwareColumn({ type: "jsonb", nullable: true })
   metadata: Record<string, unknown>
 
+  @FeatureFlagColumn(TaxInclusivePricingFeatureFlag.key, { default: false })
+  includes_tax: boolean
+
   @BeforeInsert()
   private beforeInsert(): void {
     this.id = generateEntityId(this.id, "reg")
@@ -111,7 +118,7 @@ export class Region extends SoftDeletableEntity {
  * properties:
  *   id:
  *     type: string
- *     description: The cart's ID
+ *     description: The region's ID
  *     example: reg_01G1G5V26T9H8Y0M4JNE3YGA4G
  *   name:
  *     description: "The name of the region as displayed to the customer. If the Region only has one country it is recommended to write the country name."
@@ -170,6 +177,9 @@ export class Region extends SoftDeletableEntity {
  *     type: array
  *     items:
  *       $ref: "#/components/schemas/fulfillment_provider"
+ *   includes_tax:
+ *     description: "[EXPERIMENTAL] Does the prices for the region include tax"
+ *     type: boolean
  *   created_at:
  *     type: string
  *     description: "The date with timezone at which the resource was created."

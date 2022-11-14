@@ -10,19 +10,19 @@ By integrating Mailchimp with Medusa, customers will be able to subscribe from M
 
 :::note
 
-This plugin is only used to allow your customers to subscribe but does not actually do any email sending. If you want to send emails to customers based on specific events, for example, when an order is placed, you should check out our [SendGrid plugin](./sendgrid.mdx) instead.
+This plugin is only used to allow your customers to subscribe but does not actually do any email sending. If you want to send emails to customers based on specific events, for example, when an order is placed, you should check out the [SendGrid plugin](./sendgrid.mdx) instead.
 
 :::
 
 ## Prerequisites
 
-Before going further with this guide make sure you have a Medusa server set up. You can follow our [Quickstart guide](https://docs.medusajs.com/quickstart/quick-start).
+Before going further with this guide make sure you have a Medusa server set up. You can follow the [Quickstart guide](https://docs.medusajs.com/quickstart/quick-start).
 
 You also need a Mailchimp account, so please [create one](https://mailchimp.com/signup) before you start.
 
 ## Obtain Mailchimp Keys
 
-To integrate the plugin into Medusa you need 2 keys: The API Key and the Newsletter list or Audience ID. The API Key acts as a credential for your account, whereas the Newsletter list ID determines which audience should the subscribed customers be added to.
+To integrate the plugin into Medusa you need two keys: The API Key and the Newsletter list or Audience ID. The API Key acts as a credential for your account, whereas the Newsletter list ID determines which audience should the subscribed customers be added to.
 
 You can follow [this guide](https://mailchimp.com/help/about-api-keys/#Find_or_generate_your_API_key) from Mailchimp’s documentation to obtain an API Key.
 
@@ -61,7 +61,7 @@ const plugins = [
       newsletter_list_id: process.env.MAILCHIMP_NEWSLETTER_LIST_ID
     }
   }
-};
+];
 ```
 
 ## Test it Out
@@ -72,7 +72,7 @@ This plugin adds a new `POST` endpoint at `/mailchimp/subscribe`. This endpoint 
 
 Try sending a `POST` request to `/mailchimp/subscribe` with the following JSON body:
 
-```json
+```json noHeader
 {
   "email": "example@gmail.com"
 }
@@ -80,17 +80,17 @@ Try sending a `POST` request to `/mailchimp/subscribe` with the following JSON b
 
 If the subscription is successful, a `200` response code will be returned with `OK` message.
 
-![Postman](https://i.imgur.com/tpr7uCF.png)
+![Postman](https://res.cloudinary.com/dza7lstvk/image/upload/v1668000185/Medusa%20Docs/Mailchimp/tpr7uCF_g4rymn.png)
 
 If you check your Mailchimp dashboard, you should find the email added to your Audience list.
 
-![Email Added](https://i.imgur.com/ALz6WUq.png)
+![Email Added](https://res.cloudinary.com/dza7lstvk/image/upload/v1668000199/Medusa%20Docs/Mailchimp/ALz6WUq_e4mkcs.png)
 
 ### With Additional Data
 
 Here’s an example of sending additional data with the subscription:
 
-```json
+```json noHeader
 {
     "email": "example@gmail.com",
     "data": {
@@ -173,11 +173,11 @@ export default function NewsletterForm() {
 
 This will result in a subscription form similar to the following:
 
-![Subscription Form](https://i.imgur.com/JHIFEwe.png)
+![Subscription Form](https://res.cloudinary.com/dza7lstvk/image/upload/v1668000210/Medusa%20Docs/Mailchimp/JHIFEwe_fu4rkv.png)
 
 If you try entering an email and clicking Subscribe, the email will be subscribed to your Mailchimp newsletter successfully.
 
-## What’s Next 🚀
+## What’s Next
 
-- Check out SendGrid plugin for more Email functionalities.
+- Check out [SendGrid plugin](../add-plugins/sendgrid.mdx) for more Email functionalities.
 - [Learn more about plugins.](../advanced/backend/plugins/overview.md)

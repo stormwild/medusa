@@ -16,7 +16,9 @@ If you’re not very familiar with Medusa’s architecture, you can learn more a
 
 Instead of manually following this guide to install then later deploy the Medusa Admin, you can deploy the Medusa Admin to Netlify with this button:
 
-[![Deploy to Netlify](https://www.netlify.com/img/deploy/button.svg)](https://app.netlify.com/start/deploy?repository=https://github.com/medusajs/admin)
+<a href="https://app.netlify.com/start/deploy?repository=https://github.com/medusajs/admin" class="img-url">
+  <img src="https://www.netlify.com/img/deploy/button.svg" alt="Deploy to Netlify" class="no-zoom-img" />
+</a>
 
 ## Install the Admin
 
@@ -41,7 +43,7 @@ Before running your Medusa admin, make sure that your Medusa server is running.
 
 To run your Medusa server, go to the directory holding the server and run:
 
-```bash npm2yarn
+```bash npm2yarn noHeader
 npm run start
 ```
 
@@ -55,7 +57,7 @@ npm run start
 
 By default, the admin runs on port 7000. So, in your browser, go to `localhost:7000` to view your admin.
 
-![Admin Log In](https://i.imgur.com/XYqMCo9.png)
+![Admin Log In](https://res.cloudinary.com/dza7lstvk/image/upload/v1668001604/Medusa%20Docs/Screenshots/XYqMCo9_hq1fsv.png)
 
 Use your Medusa admin’s user credentials to log in.
 
@@ -63,7 +65,7 @@ Use your Medusa admin’s user credentials to log in.
 
 If you installed the demo data when you installed the Medusa server by using the `--seed` option or running:
 
-```bash npm2yarn
+```bash npm2yarn noHeader
 npm run seed
 ```
 
@@ -91,7 +93,7 @@ The default port is set in `package.json` in the `develop` script:
 
 If you wish to change the port you can simply change the `7000` to your desired port.
 
-However, if you change your Medusa admin port, you need to change it in your Medusa server. The Medusa server has the Medusa admin and store URLs set in the configurations to avoid CORS issues.
+However, if you change your Medusa admin port, you need to change it in your Medusa server. The Medusa server has the Medusa admin and store URLs set in the configurations to avoid Cross-Origin Resource Sharing (CORS) issues.
 
 To change the URL of the Medusa admin in the server, add a new environment variable `ADMIN_CORS` or modify it if you already have it to your Admin URL:
 
@@ -107,51 +109,13 @@ For more details about the Admin CORS configuration, check out the [Configure yo
 
 :::
 
-## Admin Features Overview
+## Admin User Guide
 
-### Order Management
+Medusa admin provides a lot of ecommerce features including managing Return Merchandise Authorization (RMA) flows, store settings, products, orders, and much more.
 
-In the Medusa admin, you can view all orders in your store and their details. You can fulfill orders, capture payments, and track order history. You can also create and manage return requests, swaps, and claims.
+You can learn more about Medusa admin and its features in the [User Guide](../user-guide/index.mdx).
 
-![Order Management](https://i.imgur.com/aE0wOHA.png)
-
-### Product Management
-
-In the Medusa admin, you can manage your store’s products. You can create products, add their description and images, create variants with multiple options, set different prices for different currencies, and manage inventory.
-
-:::note
-
-To upload images and save products, you need to integrate a file storage plugin. You can use [DigitalOcean Spaces](../add-plugins/spaces), [S3](../add-plugins/s3), or [MinIO](../add-plugins/minio).
-
-:::
-
-![Product Management](https://i.imgur.com/hgqqv4p.png)
-
-### Customer Management
-
-In the Medusa admin, you can manage your store’s customers. You can manage their information and get a close-up on their orders.
-
-![Customer Management](https://i.imgur.com/bPAImGY.png)
-
-### Discounts Management
-
-In the Medusa admin, you can manage your store’s discounts. You can create and manage discounts created for all products or specific products. Discounts can also be of a fixed amount or free shipping. You can also customize the discount code, its expiry date, its description, and more.
-
-![Discounts Management](https://i.imgur.com/CUUcLba.png)
-
-### Gift Cards Management
-
-In the Medusa admin, you can manage your store’s gift card products. You can create a gift card product with images and descriptions. You can specify unlimited denominations as well.
-
-![Gift Cards Management](https://i.imgur.com/243IhXA.png)
-
-### Settings Management
-
-In the Medusa admin, you can manage your store’s overall settings. These include your store’s regions, fulfillment providers, payment providers, your store’s users, and more.
-
-![Settings Management](https://i.imgur.com/MJc92CU.png)
-
-## What’s Next 🚀
+## What’s Next
 
 - Install the [Next.js](../starters/nextjs-medusa-starter.md) or [Gatsby](../starters/gatsby-medusa-starter.md) storefront starters.
 - [Learn how you can use `create-medusa-app` to install all of Medusa’s 3 components.](../usage/create-medusa-app.mdx)

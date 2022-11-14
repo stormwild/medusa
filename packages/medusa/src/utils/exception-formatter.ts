@@ -4,16 +4,16 @@ export enum PostgresError {
   DUPLICATE_ERROR = "23505",
   FOREIGN_KEY_ERROR = "23503",
 }
-export const formatException = (err): Error => {
+export const formatException = (err): MedusaError => {
   switch (err.code) {
     case PostgresError.DUPLICATE_ERROR:
       return new MedusaError(
         MedusaError.Types.DUPLICATE_ERROR,
         `${err.table.charAt(0).toUpperCase()}${err.table.slice(
           1
-        )} with ${err.detail
-          .slice(4)
-          .replace(/[()=]/g, (s) => (s === "=" ? " " : ""))}`
+        )} with ${err.detail.slice(4).replace(/[()=]/g, (s) => {
+          return s === "=" ? " " : ""
+        })}`
       )
     case PostgresError.FOREIGN_KEY_ERROR: {
       const matches =

@@ -14,7 +14,7 @@ Through Medusa's flexible plugin system, it is possible to add a search engine t
 
 ### Medusa Components
 
-It is required to have a Medusa server installed before starting with this documentation. If not, please follow along with our [quickstart guide](../quickstart/quick-start.md) to get started in minutes.
+It is required to have a Medusa server installed before starting with this documentation. If not, please follow along with the [quickstart guide](../quickstart/quick-start.md) to get started in minutes.
 
 Furthermore, it’s highly recommended to ensure your Medusa server is configured to work with Redis. As Medusa uses Redis for the event queue internally, configuring Redis ensures that the search indices in MeiliSearch are updated whenever products on the Medusa server are updated. You can follow [this documentation to install Redis](../tutorial/0-set-up-your-development-environment.mdx#redis) and then [configure it on your Medusa server](../usage/configurations.md#redis).
 
@@ -89,11 +89,11 @@ npm run start
 
 The quickest way to test that the integration is working is by sending a `POST` request to `/store/products/search`. This endpoint accepts a `q` body parameter of the query to search for and returns in the result the products that match this query.
 
-![Postman request to search endpoint that shows results returned from the search engine](https://i.imgur.com/RCGquxU.png)
+![Postman request to search endpoint that shows results returned from the search engine](https://res.cloudinary.com/dza7lstvk/image/upload/v1668000265/Medusa%20Docs/MeiliSearch/RCGquxU_um3dvn.png)
 
 You can also check that the products are properly indexed by opening the MeiliSearch host URL in your browser, which is `http://127.0.0.1:7700/` by default. You’ll find your products that are on your Medusa server added there.
 
-![MeiliSearch dashboard showing products from the Medusa server indexed](https://i.imgur.com/5sk3jyP.png)
+![MeiliSearch dashboard showing products from the Medusa server indexed](https://res.cloudinary.com/dza7lstvk/image/upload/v1668000277/Medusa%20Docs/MeiliSearch/5sk3jyP_i3swkn.png)
 
 ### Add or Update Products
 
@@ -170,7 +170,7 @@ To make sure the Next.js storefront properly displays the products in the search
 
 :::
 
-![Search Result on Next.js storefront](https://i.imgur.com/gQVWvH2.png)
+![Search Result on Next.js storefront](https://res.cloudinary.com/dza7lstvk/image/upload/v1668000298/Medusa%20Docs/MeiliSearch/gQVWvH2_datei5.png)
 
 ### Add to Gatsby and React-Based Storefronts
 
@@ -284,9 +284,9 @@ And add the `Search` component in the returned JSX before `RegionPopover`:
 
 If you run your Gatsby storefront while the Medusa server and the MeiliSearch instance are running, you should find a search bar in the header of the page. Try entering a query to search through the products in your store.
 
-![Search box in the header of the storefront](https://i.imgur.com/ZkRgF2h.png)
+![Search box in the header of the storefront](https://res.cloudinary.com/dza7lstvk/image/upload/v1668000317/Medusa%20Docs/MeiliSearch/ZkRgF2h_ytnpv9.png)
 
-## What’s Next 🚀
+## What’s Next
 
 - Learn how to [deploy your Medusa server](../deployments/server/index.mdx).
 - Learn how to [deploy your Gatsby storefront](./../deployments/storefront/deploying-gatsby-on-netlify.md).

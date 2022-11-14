@@ -14,7 +14,7 @@ describe("/store/collections", () => {
   beforeAll(async () => {
     const cwd = path.resolve(path.join(__dirname, "..", ".."))
     dbConnection = await initDb({ cwd })
-    medusaProcess = await setupServer({ cwd })
+    medusaProcess = await setupServer({ cwd, verbose: true })
   })
 
   afterAll(async () => {
@@ -25,12 +25,7 @@ describe("/store/collections", () => {
 
   describe("/store/collections/:id", () => {
     beforeEach(async () => {
-      try {
-        await productSeeder(dbConnection)
-      } catch (err) {
-        console.log(err)
-        throw err
-      }
+      await productSeeder(dbConnection)
     })
 
     afterEach(async () => {
@@ -55,12 +50,7 @@ describe("/store/collections", () => {
 
   describe("/store/collections", () => {
     beforeEach(async () => {
-      try {
-        await productSeeder(dbConnection)
-      } catch (err) {
-        console.log(err)
-        throw err
-      }
+      await productSeeder(dbConnection)
     })
 
     afterEach(async () => {
@@ -76,7 +66,7 @@ describe("/store/collections", () => {
       expect(response.data).toMatchSnapshot({
         collections: [
           {
-            id: "test-collection",
+            id: "test-collection2",
             created_at: expect.any(String),
             updated_at: expect.any(String),
           },
@@ -86,7 +76,7 @@ describe("/store/collections", () => {
             updated_at: expect.any(String),
           },
           {
-            id: "test-collection2",
+            id: "test-collection",
             created_at: expect.any(String),
             updated_at: expect.any(String),
           },

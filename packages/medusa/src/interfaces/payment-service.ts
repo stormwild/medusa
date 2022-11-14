@@ -7,13 +7,13 @@ import {
   PaymentSessionStatus,
 } from "../models"
 import { PaymentService } from "medusa-interfaces"
+import { PaymentProviderDataInput } from "../types/payment-collection"
 
 export type Data = Record<string, unknown>
 export type PaymentData = Data
 export type PaymentSessionData = Data
 
-export interface PaymentService<T extends TransactionBaseService>
-  extends TransactionBaseService {
+export interface PaymentService extends TransactionBaseService {
   getIdentifier(): string
 
   getPaymentData(paymentSession: PaymentSession): Promise<PaymentData>
@@ -50,9 +50,9 @@ export interface PaymentService<T extends TransactionBaseService>
   getStatus(data: Data): Promise<PaymentSessionStatus>
 }
 
-export abstract class AbstractPaymentService<T extends TransactionBaseService>
+export abstract class AbstractPaymentService
   extends TransactionBaseService
-  implements PaymentService<T>
+  implements PaymentService
 {
   protected constructor(container: unknown, config?: Record<string, unknown>) {
     super(container, config)
@@ -61,10 +61,10 @@ export abstract class AbstractPaymentService<T extends TransactionBaseService>
   protected static identifier: string
 
   public getIdentifier(): string {
-    if (!(<typeof AbstractPaymentService>this.constructor).identifier) {
-      throw new Error('Missing static property "identifier".')
+    if (!(this.constructor as typeof AbstractPaymentService).identifier) {
+      throw new Error(`Missing static property "identifier".`)
     }
-    return (<typeof AbstractPaymentService>this.constructor).identifier
+    return (this.constructor as typeof AbstractPaymentService).identifier
   }
 
   public abstract getPaymentData(
@@ -77,12 +77,20 @@ export abstract class AbstractPaymentService<T extends TransactionBaseService>
   ): Promise<PaymentSessionData>
 
   public abstract createPayment(cart: Cart): Promise<PaymentSessionData>
+  public abstract createPaymentNew(
+    paymentInput: PaymentProviderDataInput
+  ): Promise<PaymentSessionData>
 
   public abstract retrievePayment(paymentData: PaymentData): Promise<Data>
 
   public abstract updatePayment(
     paymentSessionData: PaymentSessionData,
     cart: Cart
+  ): Promise<PaymentSessionData>
+
+  public abstract updatePaymentNew(
+    paymentSessionData: PaymentSessionData,
+    paymentInput: PaymentProviderDataInput
   ): Promise<PaymentSessionData>
 
   public abstract authorizePayment(
@@ -102,8 +110,8 @@ export abstract class AbstractPaymentService<T extends TransactionBaseService>
   public abstract deletePayment(paymentSession: PaymentSession): Promise<void>
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  public retrieveSavedMethods(customer: Customer): Promise<Data[]> {
-    return Promise.resolve([])
+  public async retrieveSavedMethods(customer: Customer): Promise<Data[]> {
+    return []
   }
 
   public abstract getStatus(data: Data): Promise<PaymentSessionStatus>

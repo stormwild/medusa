@@ -1,12 +1,15 @@
 const path = require("path")
+const fs = require("fs")
 const docsPath = path.join(__dirname, "../../docs/content")
 const apisPath = path.join(__dirname, "../../docs/api")
 
 const algoliaAppId = process.env.ALGOLIA_APP_ID || "temp"
 const algoliaApiKey = process.env.ALGOLIA_API_KEY || "temp"
 
+const announcementBar = JSON.parse(fs.readFileSync('./announcement.json'))
+
 /** @type {import('@docusaurus/types').DocusaurusConfig} */
-module.exports = {
+const config = {
   title: "Medusa",
   tagline: "Explore and learn how to use Medusa",
   url: "https://docs.medusajs.com",
@@ -29,9 +32,11 @@ module.exports = {
       {
         apiKey: process.env.SEGMENT_API_KEY || "temp"
       }
-    ]
+    ],
+    require.resolve("docusaurus-plugin-image-zoom")
   ],
   themeConfig: {
+    image: 'img/docs-banner.jpg',
     colorMode: {
       defaultMode: 'light',
       disableSwitch: false,
@@ -43,125 +48,150 @@ module.exports = {
       placeholder: "Search docs...",
       appId: algoliaAppId,
       contextualSearch: false,
+      externalUrlRegex: "https://medusajs.com"
     },
     prism: {
       defaultLanguage: "js",
       plugins: ["line-numbers", "show-language"],
-      theme: require("prism-react-renderer/themes/vsDark"),
-      darkTheme: require("prism-react-renderer/themes/vsDark"),
+      theme: require("./src/themes/medusaDocs"),
+    },
+    zoom: {
+      selector: '.markdown :not(.no-zoom-img) > img:not(.no-zoom-img)'
     },
     navbar: {
-      hideOnScroll: true,
+      hideOnScroll: false,
       logo: {
         alt: "Medusa",
-        src: "img/logo.svg",
-        srcDark: "img/logo-dark.svg",
-        width: 100
+        src: "img/logo.png",
+        srcDark: "img/logo-dark.png"
       },
       items: [
         {
           type: "docSidebar",
-          sidebarId: "tutorialSidebar",
+          sidebarId: "docsSidebar",
           label: "Docs"
         },
         {
-          type: 'dropdown',
-          label: 'REST API Reference',
-          items: [
-            {
-              type: 'html',
-              value: `
-              <a href="/api/store" target="_blank" rel="noopener noreferrer" class="dropdown__link">Store
-                <svg width="12" height="12" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_node_modules-@docusaurus-theme-classic-lib-theme-Icon-ExternalLink-styles-module">
-                  <path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path>
-                </svg>
-              </a>`
-            },
-            {
-              type: 'html',
-              value: `
-              <a href="/api/admin" target="_blank" rel="noopener noreferrer" class="dropdown__link">Admin
-                <svg width="12" height="12" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_node_modules-@docusaurus-theme-classic-lib-theme-Icon-ExternalLink-styles-module">
-                  <path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path>
-                </svg>
-              </a>`
-            },
-          ],
+          type: "docSidebar",
+          sidebarId: "userGuideSidebar",
+          label: "User Guide"
         },
         {
-          type: 'dropdown',
-          label: 'References',
-          items: [
-            {
-              to: "cli/reference",
-              label: "CLI Reference",
-            },
-            {
-              to: "advanced/backend/subscribers/events-list",
-              label: "Events Reference",
-            },
-            {
-              type: "docSidebar",
-              sidebarId: "jsClientSidebar",
-              label: "JS Client Reference",
-            },
-            {
-              type: "docSidebar",
-              sidebarId: "servicesSidebar",
-              label: "Services Reference",
-            },
-          ]
+          href: "/api/store",
+          label: "Store API",
+          prependBaseUrlToHref: true,
+          target: '_blank'
         },
         {
-          href: "https://github.com/medusajs/medusa",
-          className: "navbar-github-link",
+          href: "/api/admin",
+          label: "Admin API",
+          prependBaseUrlToHref: true,
+          target: '_blank'
+        },
+        {
+          href: "https://github.com/medusajs/medusa/issues/new?assignees=&labels=type%3A+docs&template=docs.yml",
           position: "right",
-        },
-        {
-          type: "search",
-          position: "right",
+          label: "Report an Issue",
+          className: "right-divider"
         },
       ],
     },
     footer: {
+      logo: {
+        alt: "Medusa",
+        src: "img/logo.png",
+        srcDark: "img/logo-dark.png"
+      },
       links: [
+        {
+          title: 'Product',
+          items: [
+            {
+              label: 'Get started',
+              to: '/quickstart/quick-start'
+            },
+            {
+              label: 'Docs',
+              to: '/'
+            },
+            {
+              label: 'Store API',
+              to: '/api/store'
+            },
+            {
+              label: 'Admin API',
+              to: '/api/admin'
+            }
+          ]
+        },
+        {
+          title: 'Company',
+          items: [
+            {
+              label: 'Careers',
+              href: 'https://medusajs.notion.site/Careers-at-Medusa-f986a1d41eb146d888f9590a360547d1'
+            },
+            {
+              label: 'Pricing',
+              href: 'https://medusajs.com/pricing/'
+            },
+            {
+              label: 'Press Kit',
+              href: 'https://medusajs.notion.site/Media-Kit-9d885bb679674b458bca316f841322b6'
+            },
+            {
+              label: 'About',
+              href: 'https://medusajs.notion.site/'
+            },
+            {
+              label: 'Blog',
+              href: 'https://medusajs.com/blog'
+            },
+            {
+              label: 'Contact',
+              href: 'https://medusajs.com/contact-us/'
+            }
+          ]
+        },
         {
           title: "Community",
           items: [
+            {
+              label: "User Trials",
+              href: "https://ky5eo2x1u81.typeform.com/to/bFCQpY59",
+            },
             {
               label: "Stack Overflow",
               href: "https://stackoverflow.com/questions/tagged/medusa-commerce",
             },
             {
+              label: "Discussions",
+              href: "https://github.com/medusajs/medusa/discussions",
+            },
+            {
               label: "Discord",
               href: "https://discord.gg/medusajs",
-            },
-            {
-              label: "Twitter",
-              href: "https://twitter.com/medusajs",
-            },
-          ],
-        },
-        {
-          title: "More",
-          items: [
-            {
-              label: "Medusa Home",
-              href: "https://medusajs.com",
-            },
-            {
-              label: "Contact",
-              href: "https://ky5eo2x1u81.typeform.com/get-in-touch",
-            },
-            {
-              label: "GitHub",
-              href: "https://github.com/medusajs/medusa",
             },
           ],
         },
       ],
       copyright: `© ${new Date().getFullYear()} Medusa`,
     },
+    socialLinks: [
+      {
+        type: 'discord',
+        href: 'https://discord.gg/medusajs'
+      },
+      {
+        type: 'twitter',
+        href: 'https://twitter.com/medusajs'
+      },
+      {
+        type: 'github',
+        href: 'https://github.com/medusajs/medusa'
+      },
+    ],
+    reportCodeLinkPrefix: 'https://github.com/medusajs/medusa/issues/new?assignees=&labels=type%3A+docs&template=docs.yml'
   },
   presets: [
     [
@@ -175,10 +205,14 @@ module.exports = {
           remarkPlugins: [
             [require('@docusaurus/remark-plugin-npm2yarn'), {sync: true}],
           ],
-          showLastUpdateTime: true
+          showLastUpdateTime: true,
+          breadcrumbs: false,
         },
         theme: {
           customCss: require.resolve("./src/css/custom.css")
+        },
+        gtag: {
+          trackingID: 'G-S7G7X3JYS3',
         },
       },
     ],
@@ -213,10 +247,22 @@ module.exports = {
             expandResponses: "200,204",
             generatedPayloadSamplesMaxDepth: 4,
             showObjectSchemaExamples: true,
-            requiredPropsFirst: true
+            requiredPropsFirst: true,
+            hideRequestPayloadSample: true
+          },
+          theme: {
+            sidebar: {
+              width: '250px'
+            }
           }
         }
       },
     ],
   ],
 }
+
+if (Object.keys(announcementBar).length) {
+  config.themeConfig.announcementBar = announcementBar
+}
+
+module.exports = config
