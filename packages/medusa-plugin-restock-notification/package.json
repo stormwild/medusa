@@ -29,6 +29,7 @@
   },
   "peerDependencies": {
     "@medusajs/medusa": "1.x.x",
+    "@medusajs/medusa": "^1.6.0",
     "medusa-interfaces": "1.x"
   },
   "dependencies": {
